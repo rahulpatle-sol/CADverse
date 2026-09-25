@@ -337,7 +337,7 @@ export default function BlueprintVisual() {
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 opacity-60"
-            style={{ background: sheenBg }}
+            style={{ background: sheenBg as unknown as React.CSSProperties["background"] }}
           />
         </motion.div>
 

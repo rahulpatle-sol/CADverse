@@ -74,7 +74,7 @@ export default function Pipeline() {
           <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s, i) => (
               <Reveal key={s.step} delay={i * 0.1} className="h-full" as="li">
-                <li className="group relative flex h-full flex-col rounded-2xl border border-white/[0.08] bg-obsidian-950/85 p-6 backdrop-blur transition-all duration-300 hover:-translate-y-1.5 hover:border-neon-violet/40 hover:shadow-glow-violet">
+                <div className="group relative flex h-full flex-col rounded-2xl border border-white/[0.08] bg-obsidian-950/85 p-6 backdrop-blur transition-all duration-300 hover:-translate-y-1.5 hover:border-neon-violet/40 hover:shadow-glow-violet">
                   <span className="absolute right-5 top-5 font-mono text-[11px] tracking-[0.2em] text-white/15 transition-colors duration-300 group-hover:text-white/35">
                     {s.step}
                   </span>
@@ -108,7 +108,7 @@ export default function Pipeline() {
                     />
                     {s.meta}
                   </span>
-                </li>
+                </div>
               </Reveal>
             ))}
           </ol>

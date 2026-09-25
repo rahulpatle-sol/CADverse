@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import UploadPanel from "@/components/UploadPanel";
 import CostBreakdown from "@/components/CostBreakdown";
-import { uploadCadFile, UploadResponse } from "@/lib/api";
+import { uploadCadFile, fetchRateCard, UploadResponse, RateCard } from "@/lib/api";
 import { colorForLayer } from "@/lib/colors";
 import type { SelectedEntity } from "@/components/CadViewer";
 
@@ -18,6 +19,21 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<SelectedEntity | null>(null);
+  const [rateCard, setRateCard] = useState<RateCard | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchRateCard()
+      .then((card) => {
+        if (!cancelled) setRateCard(card);
+      })
+      .catch(() => {
+        // rate card is optional — the estimate still renders without it
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleFileSelected = useCallback(async (file: File) => {
     setIsLoading(true);
@@ -62,21 +78,31 @@ export default function Home() {
       {/* Header */}
       <header className="flex shrink-0 items-center justify-between border-b border-blueprint-700 px-6 py-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded border border-draft-cyan/40 bg-draft-cyan/10">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M3 21L21 3M3 3h6M3 3v6M21 21h-6M21 21v-6" stroke="#5EEAD4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div>
-            <h1 className="text-sm font-semibold text-ink-100">SiteCost</h1>
-            <p className="text-xs text-ink-500">CAD drawing → material & cost estimate</p>
-          </div>
+          <Link href="/" className="flex items-center gap-2.5" aria-label="Back to Arch-Cost AI home">
+            <div className="flex h-7 w-7 items-center justify-center rounded border border-draft-cyan/40 bg-draft-cyan/10">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M3 21L21 3M3 3h6M3 3v6M21 21h-6M21 21v-6" stroke="#5EEAD4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-sm font-semibold text-ink-100">Arch-Cost AI</h1>
+              <p className="text-xs text-ink-500">CAD drawing → material &amp; cost estimate</p>
+            </div>
+          </Link>
         </div>
-        {data && (
-          <div className="font-mono text-xs text-ink-500">
-            {data.geometry.meta.entityTotal} entities · {data.geometry.meta.layerNames.length} layers
-          </div>
-        )}
+        <div className="flex items-center gap-4">
+          {data && (
+            <div className="font-mono text-xs text-ink-500">
+              {data.geometry.meta.entityTotal} entities · {data.geometry.meta.layerNames.length} layers
+            </div>
+          )}
+          <Link
+            href="/"
+            className="rounded border border-blueprint-700 px-2.5 py-1 text-xs text-ink-300 transition-colors hover:border-blueprint-600 hover:text-ink-100"
+          >
+            ← Home
+          </Link>
+        </div>
       </header>
 
       {/* Body */}
@@ -91,11 +117,12 @@ export default function Home() {
           />
 
           {data ? (
-            <CostBreakdown
-              costEstimate={data.costEstimate}
-              selectedLayer={selectedLayer}
-              onSelectLayer={handleSelectLayerFromPanel}
-            />
+          <CostBreakdown
+            costEstimate={data.costEstimate}
+            rateCard={rateCard}
+            selectedLayer={selectedLayer}
+            onSelectLayer={handleSelectLayerFromPanel}
+          />
           ) : (
             <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
               <p className="text-sm text-ink-500">Upload a site plan to see the cost breakdown here.</p>
