@@ -17,10 +17,10 @@ RUN wget -q https://github.com/OpenDesignAlliance/ODAFileConverter/releases/down
 RUN pip install --no-cache-dir ezdxf
 
 WORKDIR /app
-COPY package*.json ./
+COPY backend/package*.json ./
 RUN npm ci --only=production
 
-COPY server.js parser.py convert_dwg.py costEngine.js rate_card.json ./
+COPY backend/server.js backend/parser.py backend/convert_dwg.py backend/costEngine.js backend/rate_card.json ./
 
 # Fix Windows path in convert_dwg.py (raw string for ODA_PATH)
 RUN sed -i "s|C:\\\\Program Files\\\\ODA\\\\ODAFileConverter 27.1.0\\\\ODAFileConverter.exe|/usr/local/bin/ODAFileConverter|" convert_dwg.py
