@@ -1,0 +1,15 @@
+# render.yaml — Infrastructure as Code for Render free tier
+services:
+  - type: web
+    name: cad-estimator-api
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_BIN
+        value: python3
+      - key: ODA_PATH
+        value: /usr/local/bin/ODAFileConverter
+    autoDeploy: true

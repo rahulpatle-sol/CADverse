@@ -32,7 +32,7 @@ import json
 # or set the ODA_PATH environment variable instead.
 ODA_CONVERTER_PATH = os.environ.get(
     "ODA_PATH",
-    "C:\Program Files\ODA\ODAFileConverter 27.1.0\ODAFileConverter.exe"  # macOS default guess
+    r"C:\Program Files\ODA\ODAFileConverter 27.1.0\ODAFileConverter.exe"
 )
 
 # DXF version + output type args ODA expects: <ODAFileConverter> <in_dir> <out_dir> <out_ver> <out_type> <recurse 0/1> <audit 0/1> [filter]
@@ -66,7 +66,7 @@ def convert(input_path, output_dxf_path):
         ]
 
         try:
-            subprocess.run(cmd, check=True, capture_output=True, timeout=120)
+            subprocess.run(cmd, check=True, capture_output=True, timeout=60)
         except subprocess.CalledProcessError as e:
             return {"error": f"ODA converter failed: {e.stderr.decode(errors='ignore')}"}
         except subprocess.TimeoutExpired:

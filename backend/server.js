@@ -17,6 +17,7 @@ const path = require("path");
 const fs = require("fs");
 const { spawn, spawnSync } = require("child_process");
 const { computeCostBreakdown } = require("./costEngine");
+const os = require("os");
 
 // Windows only has "python" by default; Mac/Linux usually has "python3".
 // Detect once at startup instead of hardcoding, so this works on any OS
@@ -49,6 +50,14 @@ app.use((req, res, next) => {
   next();
 });
 
+// Memory guard for Render free tier (512MB limit)
+app.use((req, res, next) => {
+  if (process.memoryUsage().heapUsed > 400 * 1024 * 1024) {
+    return res.status(503).json({ error: "Server busy, try again" });
+  }
+  next();
+});
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
@@ -58,7 +67,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
   storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB cap for local prototype
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB cap for Render free tier
   fileFilter: (req, file, cb) => {
     const allowed = [".dwg", ".dxf", ".dwt", ".dws"];
     const ext = path.extname(file.originalname).toLowerCase();
@@ -132,6 +141,7 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
       // DWG / DWT / DWS need conversion first
       dxfPath = uploadedPath.replace(ext, ".dxf");
       await runDwgConverter(uploadedPath, dxfPath);
+      if (fs.existsSync(uploadedPath)) fs.unlinkSync(uploadedPath);
     }
 
     const parsed = await runPythonParser(dxfPath);
@@ -144,6 +154,11 @@ app.post("/api/upload", upload.single("file"), async (req, res) => {
     });
   } catch (err) {
     res.status(422).json({ error: err.message });
+  } finally {
+    // ALWAYS cleanup — ephemeral disk disappears on spin-down anyway
+    [uploadedPath, dxfPath].forEach(p => {
+      if (p && fs.existsSync(p)) fs.unlinkSync(p);
+    });
   }
 });
 
