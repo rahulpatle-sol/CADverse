@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nodejs npm ca-certificates wget unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# ODA File Converter (Linux headless)
-RUN wget -q https://github.com/OpenDesignAlliance/ODAFileConverter/releases/download/ODAFileConverter_27.1.0/ODAFileConverter_Linux.zip \
+# ODA File Converter (Linux headless) - use latest known working version
+RUN wget -q https://github.com/OpenDesignAlliance/ODAFileConverter/releases/download/ODAFileConverter_26.11.0/ODAFileConverter_Linux.zip \
     && unzip -q ODAFileConverter_Linux.zip -d /opt/oda \
     && chmod +x /opt/oda/ODAFileConverter \
     && ln -s /opt/oda/ODAFileConverter /usr/local/bin/ODAFileConverter \
