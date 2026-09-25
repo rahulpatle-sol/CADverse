@@ -1,0 +1,59 @@
+{
+  "currency": "INR",
+  "lastUpdated": "2026-09-24",
+  "region": "Madhya Pradesh (default)",
+  "rates": {
+    "road": {
+      "matchLayers": ["ROAD", "ROAD_CL", "RD", "RD_CL", "ROAD_CENTERLINE"],
+      "unit": "meter",
+      "costPerUnit": 1850,
+      "description": "Road construction (base + surface) per running meter, standard 6m width",
+      "materials": {
+        "sandPerMeter": 0.42,
+        "cementBagsPerMeter": 1.1,
+        "aggregatePerMeter": 0.65
+      }
+    },
+    "water": {
+      "matchLayers": ["WATER", "WATER_LINE", "WTR", "PIPELINE_WATER"],
+      "unit": "meter",
+      "costPerUnit": 420,
+      "description": "Water pipeline (110mm HDPE) laid + trenched, per running meter",
+      "materials": {
+        "sandPerMeter": 0.08,
+        "pipeLengthPerMeter": 1.0
+      }
+    },
+    "electric": {
+      "matchLayers": ["ELEC", "ELEC_LINE", "ELECTRIC", "POWER_LINE"],
+      "unit": "meter",
+      "costPerUnit": 380,
+      "description": "Underground electric cabling per running meter",
+      "materials": {
+        "cablePerMeter": 1.0,
+        "sandPerMeter": 0.05
+      }
+    },
+    "plot_boundary": {
+      "matchLayers": ["PLOT", "PLOT_BOUNDARY", "PLOT_LINE"],
+      "unit": "sqmeter",
+      "costPerUnit": 65,
+      "description": "Boundary wall / demarcation per sq.m of enclosed plot area",
+      "materials": {
+        "cementBagsPerSqm": 0.15
+      }
+    },
+    "streetlight": {
+      "matchLayers": ["STREETLIGHT", "POLE", "LIGHT_POLE"],
+      "unit": "count",
+      "costPerUnit": 12500,
+      "description": "Streetlight pole + fixture, per unit",
+      "materials": {}
+    }
+  },
+  "materialUnitCosts": {
+    "cementBag": 380,
+    "sandCubicMeter": 1450,
+    "aggregateCubicMeter": 1600
+  }
+}

@@ -1,0 +1,47 @@
+# Dependencies
+**/node_modules/
+
+# Frontend build output and caches
+frontend/.next/
+frontend/out/
+**/.cache/
+**/.eslintcache
+**/*.tsbuildinfo
+
+# Test and coverage output
+**/coverage/
+**/*.lcov
+
+# Runtime logs and temporary files
+**/logs/
+*.log
+*.tmp
+*.temp
+
+# Environment files
+.env
+.env.*
+!.env.*.example
+!**/.env.*.example
+
+# Backend runtime uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Python caches and virtual environments
+**/__pycache__/
+*.py[cod]
+.venv/
+venv/
+ENV/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE settings
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
